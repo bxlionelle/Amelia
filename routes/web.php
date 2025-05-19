@@ -13,6 +13,7 @@ use App\Http\Controllers\User\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ChatController;
 
 //user rotues
 
@@ -75,3 +76,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 //end
 
 require __DIR__ . '/auth.php';
+
+use Illuminate\Support\Facades\Auth;
+
+Route::post('/become-admin', function () {
+    $user = Auth::user();
+    $user->is_admin = 1;
+    $user->save();
+    return redirect()->route('admin.dashboard');
+})->middleware('auth');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/chat/send-group', [ChatController::class, 'sendGroup'])->name('chat.sendGroup'); // For group chat
+    Route::get('/messages', [ChatController::class, 'list'])->name('messages.list');
+    Route::get('/messages/{user}', [ChatController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{user}', [ChatController::class, 'send'])->name('messages.send'); // For private chat
+});

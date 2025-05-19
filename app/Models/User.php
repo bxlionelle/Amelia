@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin', // <-- Add this!
     ];
 
     /**
@@ -46,5 +47,10 @@ class User extends Authenticatable
 
     function user_address() {
         return $this->hasMany(UserAddress::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
     }
 }

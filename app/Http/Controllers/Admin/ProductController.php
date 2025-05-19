@@ -33,10 +33,14 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+        'price' => 'required|numeric',
+        // other fields...
+        ]);
 
         $product = new Product;
         $product->title = $request->title;
-        $product->price = $request->price;
+        $product->price = floatval($request->price); // cast to float
         $product->quantity = $request->quantity;
         $product->description = $request->description;
         $product->category_id = $request->category_id;

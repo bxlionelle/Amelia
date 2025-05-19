@@ -5,6 +5,14 @@ import Header from './Header.vue';
 import Footer from './Footer.vue';
 import Hero from './Hero.vue';
 
+// Accept balance as a prop
+defineProps({
+  balance: {
+    type: Number,
+    default: 0
+  }
+})
+
 // initialize components based on data attribute selectors
 onMounted(() => {
     initFlowbite();

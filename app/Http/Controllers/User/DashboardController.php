@@ -10,9 +10,14 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
 
-    function index()
+    public function index()
     {
-        $orders = Order::with('order_items.product.brand', 'order_items.product.category')->get();
-        return Inertia::render('User/Dashboard', ['orders' => $orders]);
+        $user = auth()->user();
+        $orders = $user->orders()->with('order_items.product.brand', 'order_items.product.category')->get();
+
+        return inertia('User/Dashboard', [
+            'orders' => $orders,
+            'balance' => $user->balance ?? 0,
+        ]);
     }
 }

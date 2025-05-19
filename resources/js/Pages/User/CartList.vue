@@ -134,7 +134,7 @@ function submit() {
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                    ${{ product.price }}
+                                    <span>₱{{ product.price }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <a @click="remove(product)"
@@ -148,7 +148,7 @@ function submit() {
                 </div>
                 <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
                     <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Summary</h2>
-                    <p class="leading-relaxed mb-5 text-gray-600">Total : $ {{ total }} </p>
+                    <p class="leading-relaxed mb-5 text-gray-600">Total : ₱ {{ total }} </p>
 
                     <div v-if="userAddress">
                         <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Shipping Address</h2>

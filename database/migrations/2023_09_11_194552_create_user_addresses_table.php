@@ -35,3 +35,14 @@ return new class extends Migration
         Schema::dropIfExists('user_addresses');
     }
 };
+
+$lineItems[] = [
+    'price_data' => [
+        'currency' => 'php', // Philippine Peso
+        'product_data' => [
+            'name' => $item['title'],
+        ],
+        'unit_amount' => (int)($item['price'] * 100),
+    ],
+    'quantity' => $item['quantity'],
+];

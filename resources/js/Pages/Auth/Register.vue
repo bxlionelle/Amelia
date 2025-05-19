@@ -6,11 +6,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
+// Place your useForm here:
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    is_admin: 0, // default to 0
 });
 
 const submit = () => {
@@ -84,6 +86,21 @@ const submit = () => {
                 />
 
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
+            </div>
+
+            <div class="mt-4">
+                <label class="inline-flex items-center">
+                    <input
+                        type="checkbox"
+                        name="is_admin"
+                        class="form-checkbox"
+                        v-model="form.is_admin"
+                        :true-value="1"
+                        :false-value="0"
+                    />
+                    <span class="ml-2">I want to be an Admin</span>
+                </label>
+                <InputError class="mt-2" :message="form.errors.is_admin" />
             </div>
 
             <div class="flex items-center justify-end mt-4">

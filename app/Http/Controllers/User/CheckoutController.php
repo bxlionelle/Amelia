@@ -22,39 +22,58 @@ class CheckoutController extends Controller
         $carts = $request->carts;
         $products = $request->products;
 
+        // Prevent admin from buying any products
+        if (isset($user->is_admin) && $user->is_admin) {
+            return back()->with('error', 'Admins cannot buy products.');
+        }
+
         $mergedData = [];
+
+        // Build a product lookup by product id for efficiency
+        $productLookup = [];
+        foreach ($products as $product) {
+            $productLookup[$product['id']] = $product;
+        }
 
         // Loop through the "carts" array and merge with "products" data
         foreach ($carts as $cartItem) {
-            foreach ($products as $product) {
-                if ($cartItem["product_id"] == $product["id"]) {
-                    // Merge the cart item with product data
-                    $mergedData[] = array_merge($cartItem, ["title" => $product["title"], 'price' => $product['price']]);
+            if (isset($productLookup[$cartItem["product_id"]])) {
+                $product = $productLookup[$cartItem["product_id"]];
+                // Prevent user from buying their own product
+                if (!isset($product["user_id"]) || $product["user_id"] != $user->id) {
+                    $mergedData[] = array_merge($cartItem, [
+                        "title" => $product["title"],
+                        'price' => $product['price']
+                    ]);
                 }
             }
         }
 
-        //stripe payment 
+        // If all cart items are filtered out, show error
+        if (empty($mergedData)) {
+            return back()->with('error', 'You cannot buy your own products.');
+        }
+
+        // Stripe payment integration
         $stripe = new \Stripe\StripeClient(env('STRIPE_KEY'));
         $lineItems = [];
         foreach ($mergedData as $item) {
-            $lineItems[] =
-                [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => $item['title'],
-                        ],
-                        'unit_amount' => (int)($item['price'] * 100),
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => $item['title'],
                     ],
-                    'quantity' => $item['quantity'],
-                ];
+                    'unit_amount' => (int)($item['price'] * 100),
+                ],
+                'quantity' => $item['quantity'],
+            ];
         }
 
 
 
         $checkout_session = $stripe->checkout->sessions->create([
-            'line_items' =>  $lineItems,
+            'line_items' => $lineItems,
             'mode' => 'payment',
             'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.cancel'),
@@ -65,7 +84,7 @@ class CheckoutController extends Controller
         if ($newAddress['address1'] != null) {
             $address = UserAddress::where('isMain', 1)->count();
             if ($address > 0) {
-                $address = UserAddress::where('isMain', 1)->update(['isMain' => 0]);
+                UserAddress::where('isMain', 1)->update(['isMain' => 0]);
             }
             $address = new UserAddress();
             $address->address1 = $newAddress['address1'];
@@ -89,21 +108,23 @@ class CheckoutController extends Controller
             $order->save();
             $cartItems = CartItem::where(['user_id' => $user->id])->get();
             foreach ($cartItems as $cartItem) {
-                OrderItem::create([
-                    'order_id' => $order->id, // Assuming you have an 'id' field in your orders table
-                    'product_id' => $cartItem->product_id,
-                    'quantity' => $cartItem->quantity,
-                    'unit_price' => $cartItem->product->price, // You may adjust this depending on your logic
-                ]);
-                $cartItem->delete();
-                //remove cart items from cookies
-                $cartItems = Cart::getCookieCartItems();
-                foreach ($cartItems as $item) {
-                    unset($item);
+                if ($cartItem->product && (!isset($cartItem->product->user_id) || $cartItem->product->user_id != $user->id)) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $cartItem->product_id,
+                        'quantity' => $cartItem->quantity,
+                        'unit_price' => $cartItem->product->price,
+                    ]);
                 }
-                array_splice($cartItems, 0, count($cartItems));
-                Cart::setCookieCartItems($cartItems);
+                $cartItem->delete();
             }
+            // Remove cart items from cookies
+            $cookieCartItems = Cart::getCookieCartItems();
+            foreach ($cookieCartItems as $item) {
+                unset($item);
+            }
+            array_splice($cookieCartItems, 0, count($cookieCartItems));
+            Cart::setCookieCartItems($cookieCartItems);
 
             $paymentData = [
                 'order_id' => $order->id,
@@ -117,6 +138,7 @@ class CheckoutController extends Controller
 
             Payment::create($paymentData);
         }
+        // Redirect to Stripe Checkout
         return Inertia::location($checkout_session->url);
     }
 

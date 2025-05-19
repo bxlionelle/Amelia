@@ -71,6 +71,5 @@ class Product extends Model
                 request('prices.to', 100000),
             ]);
         });
-        
     }
 }

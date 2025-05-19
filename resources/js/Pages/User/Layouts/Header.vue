@@ -1,10 +1,15 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, usePage, router } from '@inertiajs/vue3';
 import { computed } from 'vue'
 const canLogin = usePage().props.canLogin;
 const canRegister = usePage().props.canRegister;
 const auth = usePage().props.auth;
 const cart = computed(() => usePage().props.cart);
+
+// Function to become admin (for demo/testing)
+function becomeAdmin() {
+    router.post('/become-admin');
+}
 </script>
 <template>
     <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -16,7 +21,7 @@ const cart = computed(() => usePage().props.cart);
                     d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
             </svg>
 
-            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">V.shop</span>
+            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Amelia</span>
             </Link>
             <div v-if="canLogin" class="flex items-center md:order-2">
                 <div class="mr-4">
@@ -71,17 +76,36 @@ const cart = computed(() => usePage().props.cart);
                     </div>
                     <ul class="py-2" aria-labelledby="user-menu-button">
                         <li>
+                            <Link :href="route('messages.list')" class="block py-2 px-4 text-sm hover:bg-gray-100">
+                              Private Messages
+                            </Link>
+                        </li>
+                        <li>
                             <Link :href="route('dashboard')"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                             Dashboard</Link>
                         </li>
-
+                        <li v-if="auth.user.is_admin == 1">
+                            <Link :href="route('admin.dashboard')"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                            Admin Dashboard</Link>
+                        </li>
+                        <li v-else>
+                            <div class="px-4 py-2 text-sm text-yellow-700 bg-yellow-100 rounded dark:bg-yellow-900 dark:text-yellow-200 mb-2">
+                                <strong>Warning:</strong> Only admin users can access the admin dashboard.
+                            </div>
+                            <form @submit.prevent="becomeAdmin">
+                                <button type="submit"
+                                    class="block w-full px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
+                                    Become an Admin
+                                </button>
+                            </form>
+                        </li>
 
                         <li>
                             <Link :href="route('logout')" method="post"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                            Sign
-                            out</Link>
+                            Sign out</Link>
                         </li>
                     </ul>
                 </div>
