@@ -20,19 +20,39 @@ class ChatController extends Controller
     public function sendGroup(Request $request)
     {
         $request->validate(['message' => 'required|string|max:1000']);
+
         $message = Message::create([
             'user_id' => auth()->id(),
             'message' => $request->message,
         ]);
+
         broadcast(new MessageSent(auth()->user(), $message))->toOthers();
+
         return ['status' => 'Message sent!'];
     }
 
     public function list()
     {
         $users = auth()->user()->is_admin
-            ? User::where('is_admin', 0)->get()
-            : User::where('is_admin', 1)->get();
+            ? User::where('is_admin', 0)
+            : User::where('is_admin', 1);
+
+        $users = $users->get()->map(function ($user) {
+            // Find the conversation between the authenticated user and this user
+            $conversation = Conversation::between(auth()->id(), $user->id)->first();
+
+            if ($conversation) {
+                $lastMessage = $conversation->messages()->latest()->first();
+
+                $user->last_message = $lastMessage ? $lastMessage->message : null;
+                $user->last_message_time = $lastMessage ? $lastMessage->created_at->diffForHumans() : null;
+            } else {
+                $user->last_message = null;
+                $user->last_message_time = null;
+            }
+
+            return $user;
+        });
 
         return inertia('Chat/UserList', ['users' => $users]);
     }
@@ -64,14 +84,14 @@ class ChatController extends Controller
             'user_two' => max(auth()->id(), $user->id),
         ]);
 
-        // Insert the message (this is your code)
+        // Insert the message
         $message = $conversation->messages()->create([
             'user_id' => auth()->id(),
             'message' => $request->message,
         ]);
 
-        // Optionally broadcast the message
-        broadcast(new MessageSent(auth()->user(), $message, $conversation->id))->toOthers();
+        // Broadcast the message
+        broadcast(new MessageSent(auth()->user(), $message))->toOthers();
 
         return ['status' => 'Message sent!'];
     }

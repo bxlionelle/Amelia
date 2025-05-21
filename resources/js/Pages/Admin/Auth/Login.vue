@@ -88,6 +88,15 @@ const submit = () => {
                 <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </PrimaryButton>
+
+                <div class="mt-6 text-center">
+                    <Link
+                        :href="route('register')"
+                        class="text-sm text-indigo-600 hover:underline"
+                    >
+                        Don't have an account? Register here.
+                    </Link>
+                </div>
             </div>
         </form>
     </GuestLayout>

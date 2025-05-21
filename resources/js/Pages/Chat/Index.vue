@@ -23,6 +23,9 @@ import { ref, onMounted, nextTick } from 'vue'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 import { router, usePage } from '@inertiajs/vue3'
+import { useToast } from "vue-toastification";
+const toast = useToast();
+
 
 window.Pusher = Pusher
 
@@ -61,8 +64,9 @@ onMounted(() => {
 })
 
 function sendMessage() {
-    if (!message.value.trim()) return
-    sending.value = true
+    if (!message.value.trim()) return;
+    sending.value = true;
+
     router.post('/chat/send', { message: message.value }, {
         preserveScroll: true,
         onSuccess: () => {
@@ -70,11 +74,25 @@ function sendMessage() {
                 user,
                 message: message.value
             })
-            message.value = ''
-            sending.value = false
+            message.value = '';
             nextTick(() => {
-                chatBox.value.scrollTop = chatBox.value.scrollHeight
+                chatBox.value.scrollTop = chatBox.value.scrollHeight;
             })
+
+            // 🔥 Show toast on success
+            toast.success("Message sent!", {
+                position: "top-center",
+                timeout: 4417,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                hideProgressBar: true,
+                icon: true,
+            });
+        },
+        onFinish: () => {
+            sending.value = false;
         }
     })
 }

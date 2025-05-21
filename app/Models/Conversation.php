@@ -20,4 +20,14 @@ class Conversation extends Model
     {
         return $this->belongsToMany(User::class, 'conversations', 'user_one', 'user_two');
     }
+
+    public function scopeBetween($query, $userOne, $userTwo)
+    {
+        return $query->where(function ($q) use ($userOne, $userTwo) {
+            $q->where('user_one', $userOne)->where('user_two', $userTwo);
+        })->orWhere(function ($q) use ($userOne, $userTwo) {
+            $q->where('user_one', $userTwo)->where('user_two', $userOne);
+        });
+    }
+
 }

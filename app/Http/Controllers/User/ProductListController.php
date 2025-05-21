@@ -29,4 +29,16 @@ class ProductListController extends Controller
             ]
         );
     }
+
+    public function adminProducts()
+    {
+        $products = Product::whereHas('user', function ($query) {
+            $query->where('is_admin', 1);
+        })->with('user')->latest()->get();
+
+        return Inertia::render('User/Stores', [
+            'products' => $products
+        ]);
+    }
+
 }

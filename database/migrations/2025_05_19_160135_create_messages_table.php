@@ -9,15 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('conversation_id')->constrained();
-            $table->foreignId('user_id')->constrained('users');
-            $table->text('message');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('messages')) {
+            Schema::create('messages', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('conversation_id');
+                $table->unsignedBigInteger('user_id');
+                $table->text('message');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

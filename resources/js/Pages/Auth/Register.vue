@@ -88,7 +88,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 hidden">
                 <label class="inline-flex items-center">
                     <input
                         type="checkbox"
