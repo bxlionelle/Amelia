@@ -39,8 +39,8 @@ class CheckoutController extends Controller
         foreach ($carts as $cartItem) {
             if (isset($productLookup[$cartItem["product_id"]])) {
                 $product = $productLookup[$cartItem["product_id"]];
-                // Prevent user from buying their own product
-                if (!isset($product["user_id"]) || $product["user_id"] != $user->id) {
+                // Prevent user from buying their own product - check created_by instead of user_id
+                if (!isset($product["created_by"]) || $product["created_by"] != $user->id) {
                     $mergedData[] = array_merge($cartItem, [
                         "title" => $product["title"],
                         'price' => $product['price']
@@ -70,15 +70,12 @@ class CheckoutController extends Controller
             ];
         }
 
-
-
         $checkout_session = $stripe->checkout->sessions->create([
             'line_items' => $lineItems,
             'mode' => 'payment',
             'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.cancel'),
         ]);
-
 
         $newAddress = $request->address;
         if ($newAddress['address1'] != null) {
@@ -96,19 +93,22 @@ class CheckoutController extends Controller
             $address->user_id = Auth::user()->id;
             $address->save();
         }
+        
         $mainAddress = $user->user_address()->where('isMain', 1)->first();
         if ($mainAddress) {
             $order = new Order();
             $order->status = 'unpaid';
             $order->total_price = $request->total;
             $order->session_id = $checkout_session->id;
+            $order->user_id = $user->id; // Add this line - set user_id
             $order->created_by = $user->id;
-            // If a main address with isMain = 1 exists, set its id as customer_address_id
             $order->user_address_id = $mainAddress->id;
             $order->save();
+            
             $cartItems = CartItem::where(['user_id' => $user->id])->get();
             foreach ($cartItems as $cartItem) {
-                if ($cartItem->product && (!isset($cartItem->product->user_id) || $cartItem->product->user_id != $user->id)) {
+                // Check created_by instead of user_id for products
+                if ($cartItem->product && (!isset($cartItem->product->created_by) || $cartItem->product->created_by != $user->id)) {
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $cartItem->product_id,
@@ -118,6 +118,7 @@ class CheckoutController extends Controller
                 }
                 $cartItem->delete();
             }
+            
             // Remove cart items from cookies
             $cookieCartItems = Cart::getCookieCartItems();
             foreach ($cookieCartItems as $item) {

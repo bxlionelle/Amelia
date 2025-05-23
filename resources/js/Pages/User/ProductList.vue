@@ -30,7 +30,7 @@ const sortOptions = [
 
 
 const filterPrices = useForm({
-    prices: [0, 100000]
+    prices: [0, ]
 })
 //method for price filter
 const priceFilter = () => {
@@ -152,10 +152,11 @@ function updateFilteredProducts() {
 
                 <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-                        <h1 class="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1>
+                        <h1 class="text-4xl font-bold tracking-tight text-gray-900">Items</h1>
 
-                        <div class="flex items-center">
+                        <!--<div class="flex items-center">
                             <Menu as="div" class="relative inline-block text-left">
+                                
                                 <div>
                                     <MenuButton
                                         class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
@@ -165,7 +166,7 @@ function updateFilteredProducts() {
                                             aria-hidden="true" />
                                     </MenuButton>
                                 </div>
-
+                                
                                 <transition enter-active-class="transition ease-out duration-100"
                                     enter-from-class="transform opacity-0 scale-95"
                                     enter-to-class="transform opacity-100 scale-100"
@@ -183,6 +184,7 @@ function updateFilteredProducts() {
                                         </div>
                                     </MenuItems>
                                 </transition>
+                                
                             </Menu>
 
                             <button type="button" class="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
@@ -194,7 +196,8 @@ function updateFilteredProducts() {
                                 <span class="sr-only">Filters</span>
                                 <FunnelIcon class="h-5 w-5" aria-hidden="true" />
                             </button>
-                        </div>
+
+                        </div>-->
                     </div>
 
                     <section aria-labelledby="products-heading" class="pb-24 pt-6">
@@ -212,7 +215,7 @@ function updateFilteredProducts() {
                                             From
                                         </label>
 
-                                        <input type="number" id="filters-price-from" placeholder="Min price"
+                                        <input type="number" id="filters-price-from" placeholder="Minimum"
                                             v-model="filterPrices.prices[0]"
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" />
                                     </div>
@@ -223,7 +226,7 @@ function updateFilteredProducts() {
                                         </label>
 
                                         <input type="number" id="filters-price-to" v-model="filterPrices.prices[1]"
-                                            placeholder="Max price"
+                                            placeholder="Maximum"
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" />
                                     </div>
                                     <SecondaryButtonVue class="self-end" @click="priceFilter()">

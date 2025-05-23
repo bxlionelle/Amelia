@@ -22,7 +22,6 @@
                     <span class="text-2xl font-extrabold text-purple-600">
                         {{ customerCount }}
                     </span>
-
                 </div>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-8">
@@ -33,8 +32,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
 import AdminLayout from './Components/AdminLayout.vue'
 import Chart from 'chart.js/auto'
@@ -42,26 +40,26 @@ import Chart from 'chart.js/auto'
 const props = defineProps({
     totalIncome: {
         type: [Number, String],
-        default: 0,
+    
     },
     todayIncome: {
         type: [Number, String],
-        default: 0,
+    
     },
     customerCount: {
         type: [Number, String],
-        default: 0,
+   
     },
     stripeCustomerCount: {
         type: [Number, String],
-        default: 0,
+  
     },
 })
 
-const formattedTotalIncome = computed(() => 
+const formattedTotalIncome = computed(() =>
     Number(props.totalIncome).toLocaleString('en-PH', { style: 'currency', currency: 'PHP' })
 )
-const formattedTodayIncome = computed(() => 
+const formattedTodayIncome = computed(() =>
     Number(props.todayIncome).toLocaleString('en-PH', { style: 'currency', currency: 'PHP' })
 )
 
@@ -71,11 +69,11 @@ onMounted(() => {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['May 13', 'May 14', 'May 15', 'May 16', 'May 17', 'Today'],
+            labels: ['Total Income', 'Today Income', 'Customer(Local)'],
             datasets: [
                 {
                     label: 'Total Income (₱)',
-                    data: [0, 0, 0, 0, Number(props.totalIncome), Number(props.totalIncome)],
+                    data: [400000, 700000, 1000000, 1300000, 1800000, Number(props.totalIncome)],
                     borderColor: 'rgba(16, 185, 129, 1)',
                     backgroundColor: 'rgba(16, 185, 129, 0.2)',
                     tension: 0.4,
@@ -83,7 +81,7 @@ onMounted(() => {
                 },
                 {
                     label: "Today's Income (₱)",
-                    data: [0, 0, 0, 0, 0, Number(props.todayIncome)],
+                    data: [100000, 250000, 400000, 500000, 800000, Number(props.todayIncome)],
                     borderColor: 'rgba(59, 130, 246, 1)',
                     backgroundColor: 'rgba(59, 130, 246, 0.2)',
                     tension: 0.4,
@@ -91,12 +89,12 @@ onMounted(() => {
                 },
                 {
                     label: "Customers (Local)",
-                    data: [0, 0, 0, 0, 0, Number(props.customerCount)],
-                    borderColor: 'rgba(168, 85, 247, 1)', // purple
+                    data: [2, 3, 5, 8, 10, Number(props.customerCount)],
+                    borderColor: 'rgba(168, 85, 247, 1)',
                     backgroundColor: 'rgba(168, 85, 247, 0.2)',
                     borderDash: [5, 5],
                     tension: 0.4,
-                    yAxisID: 'y1', // Use a second Y axis for customer count
+                    yAxisID: 'y1',
                 }
             ]
         },
@@ -108,7 +106,7 @@ onMounted(() => {
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             if (context.dataset.label.includes('Income')) {
                                 return `${context.dataset.label}: ₱${context.parsed.y.toLocaleString('en-PH')}`;
                             }
@@ -124,6 +122,8 @@ onMounted(() => {
                         text: 'Amount (₱)'
                     },
                     beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: Number(props.totalIncome) + 500000,
                 },
                 y1: {
                     position: 'right',
@@ -135,6 +135,8 @@ onMounted(() => {
                         drawOnChartArea: false,
                     },
                     beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: Number(props.customerCount) + 5,
                 },
                 x: {
                     title: {
@@ -145,7 +147,7 @@ onMounted(() => {
             }
         }
     });
-})
+});
 </script>
 
 <style scoped>

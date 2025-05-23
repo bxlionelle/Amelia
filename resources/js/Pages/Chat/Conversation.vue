@@ -13,7 +13,7 @@
         </Link>
         <h2 class="text-lg font-semibold">
           Chat with {{ otherUser.name }}
-          <span v-if="otherUser.is_admin" class="text-red-500 ml-1">(Admin)</span>
+          <span v-if="otherUser.is_admin" class="text-red-500 ml-1">(Seller)</span>
         </h2>
       </div>
     </div>
@@ -24,8 +24,8 @@
         <div>
           <strong>
             {{ msg.user.name }}
-            <span v-if="msg.user.is_admin" class="text-red-500">(Admin)</span>
-            <span v-else class="text-blue-500">(User)</span>
+            <span v-if="msg.user.is_admin" class="text-red-500"></span>
+            <span v-else class="text-blue-500"></span>
           </strong>
         </div>
         <p class="text-gray-800">{{ msg.message }}</p>
@@ -63,9 +63,9 @@
 import { ref, nextTick } from 'vue'
 import { router, Link } from '@inertiajs/vue3'
 
-//setInterval(() => {
-//    router.reload()
-//}, 5000)
+setInterval(() => {
+   router.reload()
+}, 5000)
 
 const props = defineProps({
   conversation: Object,

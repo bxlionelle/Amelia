@@ -77,7 +77,7 @@ import { Link, router } from '@inertiajs/vue3';
                                 </h3>
                                 <p class="mt-1 text-sm text-gray-500">{{ product.brand.name }}</p>
                             </div>
-                            <p class="text-sm font-medium text-gray-900">${{ product.price }}</p>
+                            <p class="text-sm font-medium text-gray-900">₱{{ product.price }}</p>
                         </div>
                     </div>
                 </div>

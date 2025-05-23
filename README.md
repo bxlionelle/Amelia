@@ -1,12 +1,7 @@
-#### E-commerce application built with Laravel, Vue.js, Tailwind.css and Inertia.js with Stripe Payment
+Amelia - Ecommerce 
 
-#### installation
-
-Make sure you have environment setup properly. You will need MySQL, PHP8.1, Node.js and composer.
-
-#### Install Laravel Website + API
-
-1. Download the project (or clone using GIT)
+⚙️ Project Setup Instructions
+1. Clone the project
 2. Copy .env.example into .env and configure database credentials
 3. Navigate to the project's root directory using terminal
 4. Run `composer install`
@@ -14,7 +9,40 @@ Make sure you have environment setup properly. You will need MySQL, PHP8.1, Node
 6. Run migrations `php artisan migrate --seed`
 7. Run data seeder to test ``` php artisan db:seed AdminSeeder``` and and other db seeder files you can find under database/seeders
 7. Start local server by executing `php artisan serve`
-8. Open new terminal and navigate to the project root directory
+8. Open new terminal:
    Run `npm install`
 9. Run `npm run dev` to start vite server for Laravel frontend
-10. For Stripe Api key, please go to .env file and replace with your api key for this variable ```STRIPE_KEY="REPLACE WITH YOUR STRIP API KEY HERE"```
+10. For Stripe Api key, please go to .env file and replace with your api key
+
+
+🚀 Technologies Used
+🖥️ Languages
+• PHP
+
+🧰 Frameworks & Tools
+• Laravel – Main PHP framework
+• Symfony – Utilized via Laravel components
+• PHPUnit – Unit testing
+• Inertia.js – Modern single-page app support using Vue.js with Laravel
+
+🔌 APIs & Libraries
+• Stripe API – For payment and subscriptions
+• Carbon – Date/time handling
+• Guzzle – HTTP requests
+• Monolog – Logging
+• Faker – Fake data for testing
+• Mockery – Mocking framework for testing
+• Spatie – Various Laravel packages (permissions, media, etc.)
+• Doctrine – Used internally by Laravel (e.g. DBAL)
+• PSR – PHP Standards Recommendations
+  ...and other Laravel ecosystem tools
+
+
+👥 Project Contributors & Roles
+| Name                  | Role(s)                               |
+| --------------------- | ------------------------------------- |
+| **Lionelle Barayuga** | Programmer, Backend Developer, Tester |
+| **Carol Egonio**      | Programmer, Backend Developer, Tester |
+| **Jade Babiano**      | Frontend Developer, Project Manager   |
+| **Felizardo Batula**  | Frontend Developer, Tester            |
+| **Vincent Caspe**     | Frontend Developer                    |

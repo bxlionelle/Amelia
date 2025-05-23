@@ -1,4 +1,4 @@
-<?php
+<?php //ProductController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -10,12 +10,17 @@ use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category', 'brand', 'product_images')->get();
+        // Get only products that belong to the authenticated user
+        $products = Product::with('category', 'brand', 'product_images')
+                          ->where('user_id', Auth::id())
+                          ->get();
+        
         $brands = Brand::get();
         $categories = Category::get();
 
@@ -29,13 +34,16 @@ class ProductController extends Controller
         );
     }
 
-
-
     public function store(Request $request)
     {
         $request->validate([
-        'price' => 'required|numeric',
-        // other fields...
+            'price' => 'required|numeric',
+            'title' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
+            // other fields...
         ]);
 
         $product = new Product;
@@ -45,10 +53,10 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
+        $product->user_id = Auth::id(); // Associate product with authenticated user
         $product->save();
 
         //check if product has images upload 
-
         if ($request->hasFile('product_images')) {
             $productImages = $request->file('product_images');
             foreach ($productImages as $image) {
@@ -69,16 +77,27 @@ class ProductController extends Controller
     //update 
     public function update(Request $request, $id)
     {
+        // Find product that belongs to the authenticated user
+        $product = Product::where('id', $id)
+                         ->where('user_id', Auth::id())
+                         ->firstOrFail();
 
-        $product = Product::findOrFail($id);
+        $request->validate([
+            'price' => 'required|numeric',
+            'title' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
+        ]);
 
-        // dd($product);
         $product->title = $request->title;
         $product->price = $request->price;
         $product->quantity = $request->quantity;
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
+        
         // Check if product images were uploaded
         if ($request->hasFile('product_images')) {
             $productImages = $request->file('product_images');
@@ -103,13 +122,30 @@ class ProductController extends Controller
 
     public function deleteImage($id)
     {
-        $image = ProductImage::where('id', $id)->delete();
+        // Get the image and ensure it belongs to a product owned by the authenticated user
+        $image = ProductImage::whereHas('product', function($query) {
+            $query->where('user_id', Auth::id());
+        })->where('id', $id)->firstOrFail();
+        
+        $image->delete();
         return redirect()->route('admin.products.index')->with('success', 'Image deleted successfully.');
     }
 
     public function destory($id)
     {
-        $product = Product::findOrFail($id)->delete();
+        // Find and delete only products that belong to the authenticated user
+        $product = Product::where('id', $id)
+                         ->where('user_id', Auth::id())
+                         ->firstOrFail();
+        
+        $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
+    }
+
+        public function show(Product $product)
+    {
+        return Inertia::render('Products/Show', [
+            'product' => $product->load(['product_images', 'category', 'brand'])
+        ]);
     }
 }

@@ -9,10 +9,10 @@ defineProps({
 <template>
     <UserLayouts :balance="balance">
         <div class="relative max-w-screen-xl py-24 mx-auto overflow-x-auto">
-            <div class="max-w-xl mx-auto my-4 p-4 bg-white rounded shadow">
-                <div class="text-lg font-semibold mb-2">Account Balance</div>
-                <div class="text-2xl text-green-600 font-bold">₱{{ balance.toFixed(2) }}</div>
-            </div>
+           
+
+                <div class="text-lg font-semibold mb-2">Orders</div>
+
             <table v-show="order.order_items.length > 0" v-for="order in orders" :key="order.id"
                 class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-5">
                 <thead class="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">

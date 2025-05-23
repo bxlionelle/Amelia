@@ -5,6 +5,9 @@ const canLogin = usePage().props.canLogin;
 const canRegister = usePage().props.canRegister;
 const auth = usePage().props.auth;
 const cart = computed(() => usePage().props.cart);
+const logout = () => {
+    router.post(route('logout'))
+}
 
 // Function to become admin (for demo/testing)
 function becomeAdmin() {
@@ -103,11 +106,14 @@ function becomeAdmin() {
                         </li>
 
                         <li>
-                        <Link :href="route('logout')" method="post" as="button"
-                            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                            Sign out
-                        </Link>
+                            <button 
+                                @click="logout"
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                                Logout
+                            </button>
                         </li>
+
                     </ul>
                 </div>
                 <button data-collapse-toggle="navbar-user" type="button"
@@ -125,9 +131,12 @@ function becomeAdmin() {
                 <ul
                     class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                     <li>
-                        <a href="#"
-                            class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                            aria-current="page">Home</a>
+                        <Link :href="route('home')"
+                            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent 
+                                md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 
+                                dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            Home
+                        </Link>
                     </li>
                     <li>
                     <Link :href="auth.user && auth.user.is_admin == 1 ? route('admin.products.index') : route('stores.view')"

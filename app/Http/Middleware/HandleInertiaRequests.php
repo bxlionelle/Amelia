@@ -57,4 +57,14 @@ class HandleInertiaRequests extends Middleware
 
         ];
     }
+
+    public function handle($request, \Closure $next)
+    {
+        $response = parent::handle($request, $next);
+
+        // Set no-cache headers to prevent back navigation to protected pages
+        return $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+                        ->header('Pragma', 'no-cache')
+                        ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+    }
 }
