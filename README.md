@@ -52,12 +52,3 @@ Amelia - Ecommerce
     
     ...and other Laravel ecosystem tools
 
-
-👥 Project Contributors & Roles
-| Name                  | Role(s)                               |
-| --------------------- | ------------------------------------- |
-| **Lionelle Barayuga** | Programmer, Backend Developer, Tester |
-| **Carol Egonio**      | Programmer, Backend Developer, Tester |
-| **Jade Babiano**      | Frontend Developer, Project Manager   |
-| **Felizardo Batula**  | Frontend Developer, Tester            |
-| **Vincent Caspe**     | Frontend Developer                    |
