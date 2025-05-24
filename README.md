@@ -15,27 +15,42 @@ Amelia - Ecommerce
 10. For Stripe Api key, please go to .env file and replace with your api key
 
 
-🚀 Technologies Used
+🚀 Technologies Use
 🖥️ Languages
-• PHP
+
+    PHP
 
 🧰 Frameworks & Tools
-• Laravel – Main PHP framework
-• Symfony – Utilized via Laravel components
-• PHPUnit – Unit testing
-• Inertia.js – Modern single-page app support using Vue.js with Laravel
+
+    Laravel – Main PHP framework
+    
+    Symfony – Utilized via Laravel components
+    
+    PHPUnit – Unit testing
+    
+    Inertia.js – Modern single-page app support using Vue.js with Laravel
 
 🔌 APIs & Libraries
-• Stripe API – For payment and subscriptions
-• Carbon – Date/time handling
-• Guzzle – HTTP requests
-• Monolog – Logging
-• Faker – Fake data for testing
-• Mockery – Mocking framework for testing
-• Spatie – Various Laravel packages (permissions, media, etc.)
-• Doctrine – Used internally by Laravel (e.g. DBAL)
-• PSR – PHP Standards Recommendations
-  ...and other Laravel ecosystem tools
+
+    Stripe API – For payment and subscriptions
+    
+    Carbon – Date/time handling
+    
+    Guzzle – HTTP requests
+    
+    Monolog – Logging
+    
+    Faker – Fake data for testing
+    
+    Mockery – Mocking framework for testing
+    
+    Spatie – Various Laravel packages (permissions, media, etc.)
+    
+    Doctrine – Used internally by Laravel (e.g. DBAL)
+    
+    PSR – PHP Standards Recommendations
+    
+    ...and other Laravel ecosystem tools
 
 
 👥 Project Contributors & Roles
